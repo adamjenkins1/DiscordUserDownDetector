@@ -1,3 +1,4 @@
+"""test constants module"""
 TEST_GUILD_ID = 123
 TEST_USERNAME = 'asdf'
 TEST_USER_STATUS = 'online'

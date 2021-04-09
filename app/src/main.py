@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""main API module"""
 import requests
 from flask import Flask, Response
 from flask_restful import Resource, Api, abort
@@ -10,7 +11,9 @@ api = Api(app)
 
 
 class DiscordUserDownDetector(Resource):
+    """API resource to check if Discord user is online"""
     def get(self, guild_id: int, username: str):
+        """API method to check if Discord user is online given guild and username"""
         guild_widget_response = requests.get(DISCORD_WIDGET_URI.format(guild_id))
         if guild_widget_response.status_code == requests.codes.not_found:
             return abort(http_status_code=requests.codes.not_found, message=f'Guild {guild_id} does not exist')
@@ -23,9 +26,9 @@ class DiscordUserDownDetector(Resource):
         return {'status': guild_member['status']}
 
 
-@app.errorhandler(404)
+@app.errorhandler(requests.codes.not_found)
 def not_found_handler(e) -> Response:
-    return Response(status=404)
+    return Response(status=requests.codes.not_found)
 
 
 api.add_resource(DiscordUserDownDetector, '/guild/<int:guild_id>/username/<string:username>')
